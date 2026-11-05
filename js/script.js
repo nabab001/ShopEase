@@ -3311,7 +3311,7 @@ function renderCart() {
     ========================================= */
 
     const coupon =
-        bagTotal >= 1000
+        cartItemCount > 0 && bagTotal >= 1000
             ? Math.min(
                 Math.round(
                     bagTotal * 0.10
@@ -3322,17 +3322,17 @@ function renderCart() {
 
 
     const delivery =
-        bagTotal >= 2500
-            ? 0
-            : 79;
+        cartItemCount > 0
+            ? (bagTotal >= 2500 ? 0 : 79)
+            : 0;
 
 
     const convenienceFee =
-        29;
+        cartItemCount > 0 ? 29 : 0;
 
 
     const platformFee =
-        22;
+        cartItemCount > 0 ? 22 : 0;
 
 
     const payable =
@@ -4716,11 +4716,9 @@ function renderCheckout() {
 
     let delivery = 0;
 
-    const convenienceFee =
-        29;
+    let convenienceFee = 0;
 
-    const platformFee =
-        22;
+    let platformFee = 0;
 
 
     const checkoutItems =
@@ -4816,6 +4814,9 @@ function renderCheckout() {
         bagTotal >= 2500
             ? 0
             : 79;
+
+    convenienceFee = 29;
+    platformFee = 22;
 
 
     const payable =
