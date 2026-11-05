@@ -84,75 +84,74 @@ function rateLimiter(req, res, next) {
 app.use(rateLimiter);
 
 // Clean up old entries every 5 minutes
-setInterval(() => {
-    const cleanupInterval = setInterval(() => {
-        const now = Date.now();
-        for (const [ip, record] of requestCounts) {
-            if (now - record.start > RATE_WINDOW * 5) {
-                requestCounts.delete(ip);
-            }
+const cleanupInterval = setInterval(() => {
+    const now = Date.now();
+    for (const [ip, record] of requestCounts) {
+        if (now - record.start > RATE_WINDOW * 5) {
+            requestCounts.delete(ip);
         }
-    }, 5 * 60 * 1000);
-    if (cleanupInterval.unref) cleanupInterval.unref();
+    }
+}, 5 * 60 * 1000);
+if (cleanupInterval.unref) cleanupInterval.unref();
 
-    /* ════════════════════════════════════════════════
-       API ROUTES
-    ════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   API ROUTES
+════════════════════════════════════════════════ */
 
-    app.use("/api/products", productRoutes);
-    app.use("/api/orders", orderRoutes);
-    app.use("/api/newsletter", newsletterRoutes);
-    app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/newsletter", newsletterRoutes);
+app.use("/api/auth", authRoutes);
 
-    /* ════════════════════════════════════════════════
-       BASIC ROUTES
-    ════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   BASIC ROUTES
+════════════════════════════════════════════════ */
 
-    app.get("/api", (req, res) => {
-        res.json({
-            success: true,
-            message: "Welcome to ShopEase API",
-            version: "2.0.0"
-        });
+app.get("/api", (req, res) => {
+    res.json({
+        success: true,
+        message: "Welcome to ShopEase API",
+        version: "2.0.0"
     });
+});
 
-    app.get("/api/health", (req, res) => {
-        res.json({
-            success: true,
-            status: "OK",
-            message: "ShopEase backend is running",
-            timestamp: new Date().toISOString()
-        });
+app.get("/api/health", (req, res) => {
+    res.json({
+        success: true,
+        status: "OK",
+        message: "ShopEase backend is running",
+        timestamp: new Date().toISOString()
     });
+});
 
-    /* ════════════════════════════════════════════════
-       404 HANDLER
-    ════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   404 HANDLER
+════════════════════════════════════════════════ */
 
-    app.use((req, res) => {
-        res.status(404).json({
-            success: false,
-            message: "Route not found."
-        });
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found."
     });
+});
 
-    /* ════════════════════════════════════════════════
-       ERROR HANDLER
-    ════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   ERROR HANDLER
+════════════════════════════════════════════════ */
 
-    app.use((err, req, res, next) => {
-        console.error("Server error:", err);
-        res.status(500).json({
-            success: false,
-            message: "An internal server error occurred."
-        });
+app.use((err, req, res, next) => {
+    console.error("Server error:", err);
+    res.status(500).json({
+        success: false,
+        message: "An internal server error occurred."
     });
+});
 
-    /* ════════════════════════════════════════════════
-       START SERVER
-       START SERVER & EXPORT
-    ════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   START SERVER & EXPORT
+════════════════════════════════════════════════ */
 
+if (require.main === module) {
     app.listen(PORT, "0.0.0.0", () => {
         console.log("");
         console.log("════════════════════════════════════════");
@@ -164,18 +163,6 @@ setInterval(() => {
         console.log("════════════════════════════════════════");
         console.log("");
     });
-    if (require.main === module) {
-        app.listen(PORT, "0.0.0.0", () => {
-            console.log("");
-            console.log("════════════════════════════════════════");
-            console.log("        SHOPEASE API v2.0");
-            console.log("════════════════════════════════════════");
-            console.log(`  Server:   http://localhost:${PORT}`);
-            console.log(`  Health:   http://localhost:${PORT}/api/health`);
-            console.log(`  Products: http://localhost:${PORT}/api/products`);
-            console.log("════════════════════════════════════════");
-            console.log("");
-        });
-    }
+}
 
-    module.exports = app;
+module.exports = app;

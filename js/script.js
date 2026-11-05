@@ -3,15 +3,12 @@
    ========================================================= */
 
 const LOCAL_API_URL = "http://localhost:5000/api";
-const PROD_API_URL = "https://shopease-d2jh.onrender.com/api";
 
 const API_BASE_URL = (
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1" ||
     window.location.protocol === "file:"
-) ? LOCAL_API_URL : (window.SHOP_EASE_API_URL || PROD_API_URL);
-) ?LOCAL_API_URL: (
-    // Seamless Vercel and local server unified routing
+) ? LOCAL_API_URL : (
     window.location.origin + "/api"
 );
 
