@@ -3707,6 +3707,7 @@ function renderCart() {
             </div>
 
 
+            ${cartItemCount > 0 ? `
             <div class="se-price-row">
 
                 <span>
@@ -3776,6 +3777,7 @@ function renderCart() {
                 </strong>
 
             </div>
+            ` : ''}
 
 
             <div class="se-price-divider"></div>
